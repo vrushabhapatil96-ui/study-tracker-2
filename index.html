@@ -1,245 +1,718 @@
 <!doctype html>
-<html lang="en">  
-<head>  
-<meta charset="utf-8">  
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">  
-<meta name="theme-color" content="#071a3b">  
-<meta name="description" content="A personal study planner and progress tracker.">  
-<link rel="manifest" href="manifest.webmanifest">  
-<link rel="icon" href="icons/icon-192.png">  
-<title>Study Tracker</title>  
-<style>  
-:root{--navy:#071a3b;--gold:#e8c66b;--gold2:#f5e5b1;--ink:#f7f5ee;--muted:#aebbd0;--panel:#10264a;--line:#294268}  
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(160deg,#071a3b,#0a2148 65%,#071a3b);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}  
-header{padding:18px 16px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #20385d;position:sticky;top:0;background:#071a3bf2;backdrop-filter:blur(10px);z-index:5}  
-header img{width:42px;height:42px;border-radius:12px}header h1{font-size:20px;margin:0;color:var(--gold2)}header small{display:block;color:var(--muted);font-size:11px}  
-nav{display:flex;overflow:auto;gap:8px;padding:12px 14px;position:sticky;top:73px;background:#071a3bf2;z-index:4}  
-nav button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:10px 13px;border-radius:12px;font-weight:600;white-space:nowrap}  
-nav button.active,.btn.primary{background:var(--gold);color:#17233b;border-color:var(--gold)}  
-main{max-width:900px;margin:auto;padding:8px 14px 40px}.page{display:none}.page.active{display:block}  
-h2{font-size:19px;margin:12px 0;color:var(--gold2)}h3{font-size:15px;margin:0 0 9px;color:var(--gold2)}  
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:linear-gradient(145deg,#10284e,#0d2142);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;min-width:0}  
-.metric{font-size:25px;font-weight:750;color:var(--gold);margin-top:3px}.muted{color:var(--muted);font-size:12px}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}  
-input,select,textarea{width:100%;background:#081b39;border:1px solid #345078;color:var(--ink);border-radius:10px;padding:11px;font:inherit;margin:5px 0 10px;min-width:0}  
-label{font-size:12px;color:var(--muted);display:block}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}  
-button{cursor:pointer}.btn{font-size:13px}.btn.small{padding:7px 10px;font-size:12px}.btn.danger{border-color:#7b424b;color:#ffc5c5;background:#3b1b2a}  
-.btn-arrow{padding:5px 9px;font-size:12px;line-height:1;background:#173464;color:var(--gold);border:1px solid var(--line);border-radius:8px;font-weight:bold}  
-.btn-arrow:disabled{opacity:0.2;cursor:not-allowed}  
-.progress{height:10px;background:#07162e;border-radius:99px;overflow:hidden;margin:9px 0}.progress span{display:block;height:100%;background:linear-gradient(90deg,#caa64e,#f6e3a0);border-radius:99px;transition:width .25s}  
-.quest,.topic,.subject{border:1px solid var(--line);border-radius:12px;padding:11px;margin:8px 0;background:#0b2040}  
-.quest.done{opacity:.68}.quest.done .qtitle{text-decoration:line-through}  
-.barwrap{height:130px;display:flex;align-items:end;gap:7px;padding:10px 2px 0}.barcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:5px;min-width:0}.bar{width:100%;max-width:38px;background:linear-gradient(180deg,#f2dc9b,#c69c3f);border-radius:7px 7px 2px 2px;min-height:2px}.barcol small{font-size:10px;color:var(--muted)}.barcol b{font-size:10px;color:var(--gold2)}  
-.subject-progress-row{margin:13px 0}.subject-progress-row .progress{margin:6px 0 0}  
-.empty{color:var(--muted);text-align:center;padding:18px}.tag{font-size:11px;color:var(--gold2);border:1px solid #6e5b31;border-radius:99px;padding:3px 8px}  
-footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}  
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.formgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}  
-</style>  
-</head>  
-<body>  
-<header><img src="icons/icon-192.png" alt=""><div><h1>Study Tracker</h1><small>Plan • Study • Track • Achieve</small></div></header>  
-<nav id="nav">  
-<button class="active" data-page="dashboard">Dashboard</button><button data-page="map">Study Map</button><button data-page="quests">Daily Quests</button><button data-page="progress">Progress</button>  
-</nav>  
-<main>  
-<section id="dashboard" class="page active">  
-<h2>Dashboard</h2>  
-<div class="grid">  
-<div class="card"><div class="muted">Today's completed quests</div><div class="metric" id="todayCount">0</div></div>  
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071a3b">
+<meta name="description" content="A personal study planner and progress tracker.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<title>Study Tracker</title>
+<style>
+:root{--navy:#071a3b;--gold:#e8c66b;--gold2:#f5e5b1;--ink:#f7f5ee;--muted:#aebbd0;--panel:#10264a;--line:#294268}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(160deg,#071a3b,#0a2148 65%,#071a3b);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+header{padding:18px 16px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #20385d;position:sticky;top:0;background:#071a3bf2;backdrop-filter:blur(10px);z-index:5}
+header img{width:42px;height:42px;border-radius:12px}
+header h1{font-size:20px;margin:0;color:var(--gold2)}
+header small{display:block;color:var(--muted);font-size:11px}
+nav{display:flex;overflow:auto;gap:8px;padding:12px 14px;position:sticky;top:73px;background:#071a3bf2;z-index:4}
+nav button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:10px 13px;border-radius:12px;font-weight:600;white-space:nowrap}
+nav button.active,.btn.primary{background:var(--gold);color:#17233b;border-color:var(--gold)}
+main{max-width:900px;margin:auto;padding:8px 14px 40px}
+.page{display:none}
+.page.active{display:block}
+h2{font-size:19px;margin:12px 0;color:var(--gold2)}
+h3{font-size:15px;margin:0 0 9px;color:var(--gold2)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{background:linear-gradient(145deg,#10284e,#0d2142);border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0;min-width:0}
+.metric{font-size:25px;font-weight:750;color:var(--gold);margin-top:3px}
+.muted{color:var(--muted);font-size:12px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+input,select,textarea{width:100%;background:#081b39;border:1px solid #345078;color:var(--ink);border-radius:10px;padding:11px;font:inherit;margin:5px 0 10px;min-width:0}
+label{font-size:12px;color:var(--muted);display:block}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+button{cursor:pointer}
+.btn{font-size:13px}
+.btn.small{padding:7px 10px;font-size:12px}
+.btn.danger{border-color:#7b424b;color:#ffc5c5;background:#3b1b2a}
+.btn-arrow{padding:5px 9px;font-size:12px;line-height:1;background:#173464;color:var(--gold);border:1px solid var(--line);border-radius:8px;font-weight:bold}
+.btn-arrow:disabled{opacity:0.2;cursor:not-allowed}
+.progress{height:10px;background:#07162e;border-radius:99px;overflow:hidden;margin:9px 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,#caa64e,#f6e3a0);border-radius:99px;transition:width .25s}
+.quest,.topic,.subject{border:1px solid var(--line);border-radius:12px;padding:11px;margin:8px 0;background:#0b2040}
+.quest.done{opacity:.68}
+.quest.done .qtitle{text-decoration:line-through}
+.barwrap{height:130px;display:flex;align-items:end;gap:7px;padding:10px 2px 0}
+.barcol{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:5px;min-width:0}
+.bar{width:100%;max-width:38px;background:linear-gradient(180deg,#f2dc9b,#c69c3f);border-radius:7px 7px 2px 2px;min-height:2px}
+.barcol small{font-size:10px;color:var(--muted)}
+.barcol b{font-size:10px;color:var(--gold2)}
+.subject-progress-row{margin:13px 0}
+.subject-progress-row .progress{margin:6px 0 0}
+.subject{padding:0;overflow:hidden}
+.subject-head{display:flex;align-items:center;gap:8px;padding:12px;background:#0b2040;min-height:52px}
+.subject-title{flex:1;min-width:0;font-weight:700;cursor:pointer;overflow-wrap:anywhere}
+.subject-tools{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.subject-body{padding:0 10px 10px}
+.subject-chevron{color:var(--gold);font-size:17px;width:20px;text-align:center}
+.drag-handle{border:1px solid var(--line);background:#173464;color:var(--gold);border-radius:8px;padding:6px 9px;font-size:17px;line-height:1;touch-action:none;cursor:grab}
+.topic{touch-action:pan-y}
+.topic.dragging,.subject.dragging{opacity:.45;outline:2px dashed var(--gold)}
+.drag-handle:active{cursor:grabbing}
+.subject-body .row input{margin:5px 0 10px}
+.empty{color:var(--muted);text-align:center;padding:18px}
+.tag{font-size:11px;color:var(--gold2);border:1px solid #6e5b31;border-radius:99px;padding:3px 8px}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:18px}
+@media(min-width:650px){
+.grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.formgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<header><img src="icons/icon-192.png" alt=""><div><h1>Study Tracker</h1><small>Plan • Study • Track • Achieve</small></div></header>
+<nav id="nav">
+<button class="active" data-page="dashboard">Dashboard</button><button data-page="map">Study Map</button><button data-page="quests">Daily Quests</button><button data-page="progress">Progress</button>
+</nav>
+<main>
+<section id="dashboard" class="page active">
+<h2>Dashboard</h2>
+<div class="grid">
+<div class="card"><div class="muted">Today's completed quests</div><div class="metric" id="todayCount">0</div></div>
 <div class="card">
-  <div class="row between">
-    <div class="muted">Daily Goal Target</div>
-    <button class="btn small" onclick="setDailyGoal()">Set Goal</button>
-  </div>
-  <div class="metric" id="todayPct">0%</div>
-  <div class="progress"><span id="achievementProgress" style="width:0%"></span></div>
-  <div class="muted" id="goalHint">0 / 6h target completed</div>
-</div>  
-<div class="card"><div class="muted">Total XP</div><div class="metric" id="totalXp">0</div><div class="progress"><span id="xpProgress" style="width:0%"></span></div><div class="muted" id="xpHint">0 / 100 XP toward next level</div></div>  
-<div class="card"><div class="muted">Current level</div><div class="metric" id="level">1</div><div class="progress"><span id="levelProgress" style="width:0%"></span></div><div class="muted" id="levelHint">Progress to next level</div></div>  
-</div>  
-<div class="card"><h3>Today's quest status</h3><div class="metric" id="questCount">0 / 0</div><div class="muted" id="todayText">quests completed</div></div>  
-<div class="card"><h3>Last 7 days — completed quests</h3><div class="barwrap" id="weekChart"></div></div>  
-<div class="card"><h3>Subject-wise completion</h3><div class="muted">Subjects are ranked by completion percentage. Each bar shows completed topics out of total topics.</div><div id="subjectChart"></div></div>  
-<div class="card"><h3>Study map overview</h3><div id="mapSummary" class="muted"></div></div>  
-</section>  
-<section id="map" class="page">  
-<h2>Study Map</h2>  
-<div class="card"><h3>Add a subject</h3><div class="row"><input id="subjectName" placeholder="e.g. Indian Polity" style="flex:1"><button class="btn primary" id="addSubject">Add subject</button></div><p class="muted">Use the ▲ and ▼ arrow buttons to move subjects and topics up or down.</p></div>  
-<div id="subjects"></div>  
-</section>  
-<section id="quests" class="page">  
-<h2>Daily Quests</h2>  
-<div class="card"><h3>Add multiple quests</h3><label>One quest per line</label><textarea id="bulkTitles" rows="4" placeholder="Read Fundamental Rights&#10;Revise Parliament&#10;Solve 25 MCQs"></textarea>  
-<div class="formgrid"><div><label>Subject</label><select id="questSubject"><option value="">General</option></select></div><div><label>Date</label><input id="questDate" type="date"></div><div><label>Study minutes per quest</label><input id="questMinutes" type="number" min="0" value="60"></div><div><label>XP per quest</label><input id="questXp" type="number" min="0" value="20"></div></div><button class="btn primary" id="addQuests">Add all quests</button></div>  
-<div class="row between"><h3>Quest list</h3><input id="filterDate" type="date" style="max-width:165px"></div><div id="questList"></div>  
-</section>  
-<section id="progress" class="page">  
-<h2>Progress</h2>  
-<div class="card"><h3>Record time separately</h3><div class="formgrid"><div><label>Date</label><input id="timeDate" type="date"></div><div><label>Study time (minutes)</label><input id="studyMinutes" type="number" min="0" placeholder="e.g. 300"></div><div><label>Screen time (minutes)</label><input id="screenMinutes" type="number" min="0" placeholder="e.g. 90"></div></div><button class="btn primary" id="saveTime">Save time record</button></div>  
-<div class="grid"><div class="card"><div class="muted">Total study time</div><div class="metric" id="allStudy">0h</div></div><div class="card"><div class="muted">Total screen time</div><div class="metric" id="allScreen">0h</div></div></div>  
-<div class="card"><h3>Daily time records</h3><div id="timeRecords"></div></div>  
-<div class="card"><h3>Data</h3><div class="row"><button class="btn" id="exportData">Export data</button><label class="btn" for="importFile">Import data</label><input id="importFile" type="file" accept="application/json" hidden></div><p class="muted">Your records are stored locally in this browser on this device.</p></div>  
-</section>  
-</main><footer>Study Tracker · Your progress, one day at a time.</footer>  
-<script>  
-const KEY='studyTrackerV3'; // Forced fresh key to bypass old browser cache  
-const syllabus=[  
-['Constitution & Polity',['Preamble and features','Fundamental Rights and Duties','Directive Principles','President and Vice-President','Parliament','Supreme Court and High Courts','Constitutional Bodies','Non-constitutional Bodies','Centre-State Relations','Emergency Provisions','Local Self Government']],  
-['History',['Ancient India','Medieval India','Modern India','Indian National Movement','Maharashtra history and reformers']],  
-['Geography',['Physical geography','Indian geography','Maharashtra geography','Rivers, dams and irrigation','Climate, soils and agriculture','Maps and resources']],  
-['Economics',['Basic concepts','National income','Money and banking','Inflation','Public finance and budget','Planning and development','Maharashtra economy']],  
-['General Science',['Physics','Chemistry','Biology','Human body','Genetics and biotechnology','Everyday science']],  
-['Environment',['Ecology and ecosystem','Biodiversity','Protected areas','Climate change','Environmental laws and conventions']],  
-['Maharashtra Special',['Maharashtra administration','Districts and divisions','Schemes and policies','Social and economic indicators']],  
-['Maths & Reasoning',['Number system','Percentage and ratio','Profit, loss and interest','Time and work','Speed, distance and time','Logical reasoning']],  
-['Current Affairs',['National current affairs','International current affairs','Maharashtra current affairs','Reports, indices and awards']]  
-];  
-const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};  
+<div class="row between">
+<div class="muted">Daily Goal Target</div>
+<button class="btn small" onclick="setDailyGoal()">Set Goal</button>
+</div>
+<div class="metric" id="todayPct">0%</div>
+<div class="progress"><span id="achievementProgress" style="width:0%"></span></div>
+<div class="muted" id="goalHint">0 / 6h target completed</div>
+</div>
+<div class="card"><div class="muted">Total XP</div><div class="metric" id="totalXp">0</div><div class="progress"><span id="xpProgress" style="width:0%"></span></div><div class="muted" id="xpHint">0 / 100 XP toward next level</div></div>
+<div class="card"><div class="muted">Current level</div><div class="metric" id="level">1</div><div class="progress"><span id="levelProgress" style="width:0%"></span></div><div class="muted" id="levelHint">Progress to next level</div></div>
+</div>
+<div class="card"><h3>Today's quest status</h3><div class="metric" id="questCount">0 / 0</div><div class="muted" id="todayText">quests completed</div></div>
+<div class="card"><h3>Last 7 days — completed quests</h3><div class="barwrap" id="weekChart"></div></div>
+<div class="card"><h3>Subject-wise completion</h3><div class="muted">Subjects are ranked by completion percentage. Each bar shows completed topics out of total topics.</div><div id="subjectChart"></div></div>
+<div class="card"><h3>Study map overview</h3><div id="mapSummary" class="muted"></div></div>
+</section>
+<section id="map" class="page">
+<h2>Study Map</h2>
+<div class="card"><h3>Add a subject</h3><div class="row"><input id="subjectName" placeholder="e.g. Indian Polity" style="flex:1"><button class="btn primary" id="addSubject">Add subject</button></div><p class="muted">Tap a subject to show its topics. Hold the ⠿ handle and drag to rearrange subjects or topics.</p></div>
+<div id="subjects"></div>
+</section>
+<section id="quests" class="page">
+<h2>Daily Quests</h2>
+<div class="card"><h3>Add multiple quests</h3><label>One quest per line</label><textarea id="bulkTitles" rows="4" placeholder="Read Fundamental Rights&#10;Revise Parliament&#10;Solve 25 MCQs"></textarea>
+<div class="formgrid">
+<div><label>Subject</label><select id="questSubject"><option value="">General</option></select></div>
+<div><label>Date</label><input id="questDate" type="date"></div>
+<div><label>Study minutes per quest</label><input id="questMinutes" type="number" min="0" value="60"></div>
+<div><label>XP per quest</label><input id="questXp" type="number" min="0" value="20"></div>
+</div>
+<button class="btn primary" id="addQuests">Add all quests</button></div>
+<div class="row between"><h3>Quest list</h3><input id="filterDate" type="date" style="max-width:165px"></div><div id="questList"></div>
+</section>
+<section id="progress" class="page">
+<h2>Progress</h2>
+<div class="card"><h3>Record time separately</h3><div class="formgrid">
+<div><label>Date</label><input id="timeDate" type="date"></div>
+<div><label>Study time (minutes)</label><input id="studyMinutes" type="number" min="0" placeholder="e.g. 300"></div>
+<div><label>Screen time (minutes)</label><input id="screenMinutes" type="number" min="0" placeholder="e.g. 90"></div>
+</div><button class="btn primary" id="saveTime">Save time record</button></div>
+<div class="grid"><div class="card"><div class="muted">Total study time</div><div class="metric" id="allStudy">0h</div></div><div class="card"><div class="muted">Total screen time</div><div class="metric" id="allScreen">0h</div></div></div>
+<div class="card"><h3>Daily time records</h3><div id="timeRecords"></div></div>
+<div class="card"><h3>Data</h3><div class="row"><button class="btn" id="exportData">Export data</button><label class="btn" for="importFile">Import data</label><input id="importFile" type="file" accept="application/json" hidden></div><p class="muted">Your records are stored locally in this browser on this device.</p></div>
+</section>
+</main>
+<footer>Study Tracker · Your progress, one day at a time.</footer>
+<script>
+const KEY='studyTrackerV3';
+const syllabus=[
+['Constitution & Polity',['Preamble and features','Fundamental Rights and Duties','Directive Principles','President and Vice-President','Parliament','Supreme Court and High Courts','Constitutional Bodies','Non-constitutional Bodies','Centre-State Relations','Emergency Provisions','Local Self Government']],
+['History',['Ancient India','Medieval India','Modern India','Indian National Movement','Maharashtra history and reformers']],
+['Geography',['Physical geography','Indian geography','Maharashtra geography','Rivers, dams and irrigation','Climate, soils and agriculture','Maps and resources']],
+['Economics',['Basic concepts','National income','Money and banking','Inflation','Public finance and budget','Planning and development','Maharashtra economy']],
+['General Science',['Physics','Chemistry','Biology','Human body','Genetics and biotechnology','Everyday science']],
+['Environment',['Ecology and ecosystem','Biodiversity','Protected areas','Climate change','Environmental laws and conventions']],
+['Maharashtra Special',['Maharashtra administration','Districts and divisions','Schemes and policies','Social and economic indicators']],
+['Maths & Reasoning',['Number system','Percentage and ratio','Profit, loss and interest','Time and work','Speed, distance and time','Logical reasoning']],
+['Current Affairs',['National current affairs','International current affairs','Maharashtra current affairs','Reports, indices and awards']]
+];
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 
-let data=load();  
+let data=load();
+let openSubjects = new Set();
+let dragState = null;
+let longPressTimer = null;
+let dragStarted = false;
 
-// Migrate data seamlessly from V1 or V2 if present  
-if(!localStorage.getItem('studyTrackerV3')) {  
-  let oldData = localStorage.getItem('studyTrackerV2') || localStorage.getItem('studyTrackerV1');  
-  if(oldData) {  
-    try {  
-      let parsed = JSON.parse(oldData);  
-      if(parsed && typeof parsed==='object') {  
-        data = parsed;  
-        save();  
-      }  
-    } catch(e){}  
-  }  
-}  
+// Migrate data seamlessly from V1 or V2 if present
+if(!localStorage.getItem('studyTrackerV3')) {
+let oldData = localStorage.getItem('studyTrackerV2') || localStorage.getItem('studyTrackerV1');
+if(oldData) {
+try {
+let parsed = JSON.parse(oldData);
+if(parsed && typeof parsed==='object') {
+data = parsed;
+save();
+}
+} catch(e){}
+}
+}
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function defaultSubjects(){return syllabus.map(([name,topics])=>({id:id(),name,topics:topics.map(name=>({id:id(),name,done:false}))}))}
 
-function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}  
-function defaultSubjects(){return syllabus.map(([name,topics])=>({id:id(),name,topics:topics.map(name=>({id:id(),name,done:false}))}))}  
-function load(){  
- let d;try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}  
- if(!d||typeof d!=='object')d={};  
- if(!Array.isArray(d.subjects)||d.subjects.length===0)d.subjects=defaultSubjects();  
- d.subjects=d.subjects.map(s=>({id:s.id||id(),name:String(s.name||'Subject'),topics:Array.isArray(s.topics)?s.topics.map(t=>typeof t==='string'?{id:id(),name:t,done:false}:{id:t.id||id(),name:String(t.name||'Topic'),done:!!t.done}):[]}));  
- if(!Array.isArray(d.quests))d.quests=[];  
- if(!Array.isArray(d.times))d.times=[];  
- if(!d.dailyGoalHours||d.dailyGoalHours<=0)d.dailyGoalHours=6;  
- return d;  
-}  
-function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}  
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}  
-function dateLabel(d){return new Date(d+'T12:00:00').toLocaleDateString(undefined,{weekday:'short'})}  
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===b.dataset.page));render()});  
-document.getElementById('questDate').value=today();document.getElementById('filterDate').value=today();document.getElementById('timeDate').value=today();  
-document.getElementById('addSubject').onclick=()=>{let n=document.getElementById('subjectName').value.trim();if(!n)return;if(data.subjects.some(s=>s.name.toLowerCase()===n.toLowerCase()))return alert('Subject already exists.');data.subjects.push({id:id(),name:n,topics:[]});document.getElementById('subjectName').value='';save()};  
-document.getElementById('addQuests').onclick=()=>{let titles=document.getElementById('bulkTitles').value.split('\n').map(x=>x.trim()).filter(Boolean);if(!titles.length)return;let subject=document.getElementById('questSubject').value;let date=document.getElementById('questDate').value||today();let mins=Math.max(0,+document.getElementById('questMinutes').value||0),xp=Math.max(0,+document.getElementById('questXp').value||0);titles.forEach(title=>data.quests.push({id:id(),title,subject,date,minutes:mins,xp,done:false}));document.getElementById('bulkTitles').value='';save()};  
-document.getElementById('filterDate').onchange=renderQuests;  
-document.getElementById('saveTime').onclick=()=>{let date=document.getElementById('timeDate').value||today(),study=Math.max(0,+document.getElementById('studyMinutes').value||0),screen=Math.max(0,+document.getElementById('screenMinutes').value||0);let r=data.times.find(x=>x.date===date);if(r){r.study+=study;r.screen+=screen}else data.times.push({id:id(),date,study,screen});document.getElementById('studyMinutes').value='';document.getElementById('screenMinutes').value='';save()};  
-document.getElementById('exportData').onclick=()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='study-tracker-data.json';a.click();URL.revokeObjectURL(a.href)};  
-document.getElementById('importFile').onchange=e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.subjects)||!Array.isArray(x.quests)||!Array.isArray(x.times))throw Error();data=x;save();alert('Data imported.')}catch(err){alert('This file is not a valid Study Tracker backup.')}};r.readAsText(f)};  
-function setDailyGoal(){  
- let current=data.dailyGoalHours||6;  
- let val=prompt('Set your daily study target in hours:',current);  
- if(val===null)return;  
- let hours=parseFloat(val);  
- if(isNaN(hours)||hours<=0)return alert('Please enter a valid positive number of hours.');  
- data.dailyGoalHours=hours;  
- save();  
-}  
-function render(){renderDashboard();renderMap();renderQuests();renderTime()}  
-function renderDashboard(){  
- let t=today(),todayQ=data.quests.filter(q=>q.date===t),done=todayQ.filter(q=>q.done).length;  
- let todayQuestMins=todayQ.filter(q=>q.done).reduce((sum,q)=>sum+(+q.minutes||0),0);  
- let timeRec=data.times.find(x=>x.date===t);  
- let todayRecordMins=timeRec?+timeRec.study||0:0;  
- let totalTodayMins=todayQuestMins+todayRecordMins;  
- let totalTodayHours=totalTodayMins/60;  
- let targetHours=data.dailyGoalHours||6;  
- let goalPct=Math.min(100,Math.round((totalTodayHours/targetHours)*100));  
- document.getElementById('todayCount').textContent=done;  
- document.getElementById('todayPct').textContent=goalPct+'%';  
- document.getElementById('achievementProgress').style.width=goalPct+'%';  
- document.getElementById('goalHint').textContent=totalTodayHours.toFixed(1)+'h / '+targetHours+'h target completed';  
- document.getElementById('questCount').textContent=done+' / '+todayQ.length;  
- document.getElementById('todayText').textContent='quests completed';  
- let xp=data.quests.filter(q=>q.done).reduce((s,q)=>s+(+q.xp||0),0);  
- let level=1+Math.floor(xp/100),levelPct=xp%100;  
- document.getElementById('totalXp').textContent=xp;  
- document.getElementById('xpProgress').style.width=levelPct+'%';  
- document.getElementById('xpHint').textContent=levelPct+' / 100 XP toward next level';  
- document.getElementById('level').textContent=level;  
- document.getElementById('levelProgress').style.width=levelPct+'%';  
- document.getElementById('levelHint').textContent=(100-levelPct)+' XP to reach level '+(level+1);  
- let days=Array.from({length:7},(_,i)=>{let d=new Date();d.setDate(d.getDate()-6+i);return d.toLocaleDateString('en-CA')});  
- let vals=days.map(d=>data.quests.filter(q=>q.date===d&&q.done).length),max=Math.max(1,...vals);  
- document.getElementById('weekChart').innerHTML=days.map((d,i)=>`<div class="barcol"><b>${vals[i]}</b><div class="bar" style="height:${Math.max(2,vals[i]/max*88)}px"></div><small>${dateLabel(d)}</small></div>`).join('');  
- let subjectStats=data.subjects.map(s=>{let total=s.topics.length,done=s.topics.filter(t=>t.done).length;return {name:s.name,total,done,pct:total?Math.round(done/total*100):0}}).sort((a,b)=>b.pct-a.pct||b.done-a.done||a.name.localeCompare(b.name));  
- document.getElementById('subjectChart').innerHTML=subjectStats.length?subjectStats.map(s=>`<div class="subject-progress-row"><div class="row between"><strong>${esc(s.name)}</strong><span class="muted">${s.done} / ${s.total} · ${s.pct}%</span></div><div class="progress"><span style="width:${s.pct}%"></span></div></div>`).join(''):'<div class="empty">Add subjects and topics in Study Map to see progress.</div>';  
- let topics=data.subjects.reduce((s,x)=>s+x.topics.length,0),finished=data.subjects.reduce((s,x)=>s+x.topics.filter(t=>t.done).length,0);  
- document.getElementById('mapSummary').textContent=`${data.subjects.length} subjects · ${topics} topics · ${finished} topics completed`;  
-}  
-function renderMap(){  
- let sel=document.getElementById('questSubject'),old=sel.value;  
- sel.innerHTML='<option value="">General</option>'+data.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');  
- if(data.subjects.some(s=>s.id===old))sel.value=old;  
- 
- document.getElementById('subjects').innerHTML=data.subjects.map((s,sIdx)=>`<div class="subject">  
+function load(){
+ let d;
+ try{d=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ if(!d||typeof d!=='object')d={};
+ if(!Array.isArray(d.subjects)||d.subjects.length===0)d.subjects=defaultSubjects();
+ d.subjects=d.subjects.map(s=>({id:s.id||id(),name:String(s.name||'Subject'),topics:Array.isArray(s.topics)?s.topics.map(t=>typeof t==='string'?{id:id(),name:t,done:false}:{id:t.id||id(),name:String(t.name||'Topic'),done:!!t.done}):[]}));
+ if(!Array.isArray(d.quests))d.quests=[];
+ if(!Array.isArray(d.times))d.times=[];
+ if(!d.dailyGoalHours||d.dailyGoalHours<=0)d.dailyGoalHours=6;
+ return d;
+}
+
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render()}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function dateLabel(d){return new Date(d+'T12:00:00').toLocaleDateString(undefined,{weekday:'short'})}
+
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+ document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+ document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===b.dataset.page));
+ render();
+});
+
+document.getElementById('questDate').value=today();
+document.getElementById('filterDate').value=today();
+document.getElementById('timeDate').value=today();
+
+document.getElementById('addSubject').onclick=()=>{
+ let n=document.getElementById('subjectName').value.trim();
+ if(!n)return;
+ if(data.subjects.some(s=>s.name.toLowerCase()===n.toLowerCase()))return alert('Subject already exists.');
+ data.subjects.push({id:id(),name:n,topics:[]});
+ document.getElementById('subjectName').value='';
+ save();
+};
+
+document.getElementById('addQuests').onclick=()=>{
+ let titles=document.getElementById('bulkTitles').value.split('\n').map(x=>x.trim()).filter(Boolean);
+ if(!titles.length)return;
+ let subject=document.getElementById('questSubject').value;
+ let date=document.getElementById('questDate').value||today();
+ let mins=Math.max(0,+document.getElementById('questMinutes').value||0);
+ let xp=Math.max(0,+document.getElementById('questXp').value||0);
+ titles.forEach(title=>data.quests.push({id:id(),title,subject,date,minutes:mins,xp,done:false}));
+ document.getElementById('bulkTitles').value='';
+ save();
+};
+
+document.getElementById('filterDate').onchange=renderQuests;
+
+document.getElementById('saveTime').onclick=()=>{
+ let date=document.getElementById('timeDate').value||today();
+ let study=Math.max(0,+document.getElementById('studyMinutes').value||0);
+ let screen=Math.max(0,+document.getElementById('screenMinutes').value||0);
+ let r=data.times.find(x=>x.date===date);
+ if(r){r.study+=study;r.screen+=screen}
+ else data.times.push({id:id(),date,study,screen});
+ document.getElementById('studyMinutes').value='';
+ document.getElementById('screenMinutes').value='';
+ save();
+};
+
+document.getElementById('exportData').onclick=()=>{
+ let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ let a=document.createElement('a');
+ a.href=URL.createObjectURL(blob);
+ a.download='study-tracker-data.json';
+ a.click();
+ URL.revokeObjectURL(a.href);
+};
+
+document.getElementById('importFile').onchange=e=>{
+ let f=e.target.files[0];
+ if(!f)return;
+ let r=new FileReader();
+ r.onload=()=>{
+  try{
+   let x=JSON.parse(r.result);
+   if(!Array.isArray(x.subjects)||!Array.isArray(x.quests)||!Array.isArray(x.times))throw Error();
+   data=x;
+   save();
+   alert('Data imported.');
+  }catch(err){
+   alert('This file is not a valid Study Tracker backup.');
+  }
+ };
+ r.readAsText(f);
+};
+
+function setDailyGoal(){
+ let current=data.dailyGoalHours||6;
+ let val=prompt('Set your daily study target in hours:',current);
+ if(val===null)return;
+ let hours=parseFloat(val);
+ if(isNaN(hours)||hours<=0)return alert('Please enter a valid positive number of hours.');
+ data.dailyGoalHours=hours;
+ save();
+}
+
+function render(){
+ renderDashboard();
+ renderMap();
+ renderQuests();
+ renderTime();
+}
+
+function renderDashboard(){
+ let t=today();
+ let todayQ=data.quests.filter(q=>q.date===t);
+ let done=todayQ.filter(q=>q.done).length;
+ let todayQuestMins=todayQ.filter(q=>q.done).reduce((sum,q)=>sum+(+q.minutes||0),0);
+ let timeRec=data.times.find(x=>x.date===t);
+ let todayRecordMins=timeRec?+timeRec.study||0:0;
+ let totalTodayMins=todayQuestMins+todayRecordMins;
+ let totalTodayHours=totalTodayMins/60;
+ let targetHours=data.dailyGoalHours||6;
+ let goalPct=Math.min(100,Math.round((totalTodayHours/targetHours)*100));
+
+ document.getElementById('todayCount').textContent=done;
+ document.getElementById('todayPct').textContent=goalPct+'%';
+ document.getElementById('achievementProgress').style.width=goalPct+'%';
+ document.getElementById('goalHint').textContent=totalTodayHours.toFixed(1)+'h / '+targetHours+'h target completed';
+ document.getElementById('questCount').textContent=done+' / '+todayQ.length;
+ document.getElementById('todayText').textContent='quests completed';
+
+ let xp=data.quests.filter(q=>q.done).reduce((s,q)=>s+(+q.xp||0),0);
+ let level=1+Math.floor(xp/100);
+ let levelPct=xp%100;
+
+ document.getElementById('totalXp').textContent=xp;
+ document.getElementById('xpProgress').style.width=levelPct+'%';
+ document.getElementById('xpHint').textContent=levelPct+' / 100 XP toward next level';
+ document.getElementById('level').textContent=level;
+ document.getElementById('levelProgress').style.width=levelPct+'%';
+ document.getElementById('levelHint').textContent=(100-levelPct)+' XP to reach level '+(level+1);
+
+ let days=Array.from({length:7},(_,i)=>{
+  let d=new Date();
+  d.setDate(d.getDate()-6+i);
+  return d.toLocaleDateString('en-CA');
+ });
+
+ let vals=days.map(d=>data.quests.filter(q=>q.date===d&&q.done).length);
+ let max=Math.max(1,...vals);
+
+ document.getElementById('weekChart').innerHTML=days.map((d,i)=>`
+ <div class="barcol">
+ <b>${vals[i]}</b>
+ <div class="bar" style="height:${Math.max(2,vals[i]/max*88)}px"></div>
+ <small>${dateLabel(d)}</small>
+ </div>`).join('');
+
+ let subjectStats=data.subjects.map(s=>{
+  let total=s.topics.length;
+  let done=s.topics.filter(t=>t.done).length;
+  return {name:s.name,total,done,pct:total?Math.round(done/total*100):0};
+ }).sort((a,b)=>b.pct-a.pct||b.done-a.done||a.name.localeCompare(b.name));
+
+ document.getElementById('subjectChart').innerHTML=subjectStats.length?
+ subjectStats.map(s=>`
+ <div class="subject-progress-row">
  <div class="row between">
-   <strong>${esc(s.name)}</strong>
-   <div class="row">
-     <button class="btn-arrow" ${sIdx===0?'disabled':''} onclick="moveSubject('${s.id}', -1)" title="Move Up">▲</button>
-     <button class="btn-arrow" ${sIdx===data.subjects.length-1?'disabled':''} onclick="moveSubject('${s.id}', 1)" title="Move Down">▼</button>
-     <button class="btn small" onclick="editSubject('${s.id}')">Edit name</button>
+ <strong>${esc(s.name)}</strong>
+ <span class="muted">${s.done} / ${s.total} · ${s.pct}%</span>
+ </div>
+ <div class="progress"><span style="width:${s.pct}%"></span></div>
+ </div>`).join(''):
+ '<div class="empty">Add subjects and topics in Study Map to see progress.</div>';
+
+ let topics=data.subjects.reduce((s,x)=>s+x.topics.length,0);
+ let finished=data.subjects.reduce((s,x)=>s+x.topics.filter(t=>t.done).length,0);
+ document.getElementById('mapSummary').textContent=
+ `${data.subjects.length} subjects · ${topics} topics · ${finished} topics completed`;
+}
+
+// COLLAPSIBLE STUDY MAP
+function renderMap(){
+ let sel=document.getElementById('questSubject');
+ let old=sel.value;
+
+ sel.innerHTML='<option value="">General</option>'+
+ data.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+
+ if(data.subjects.some(s=>s.id===old))sel.value=old;
+
+ document.getElementById('subjects').innerHTML=data.subjects.map((s,sIdx)=>{
+  let isOpen=openSubjects.has(s.id);
+
+  return `<div class="subject" data-subject-id="${s.id}">
+   <div class="subject-head">
+
+    <button class="drag-handle subject-drag" type="button"
+    aria-label="Hold and drag to move subject" title="Hold and drag to move">⠿</button>
+
+    <div class="subject-chevron">${isOpen?'▾':'▸'}</div>
+
+    <strong class="subject-title" onclick="toggleSubject('${s.id}')">
+    ${esc(s.name)}
+    </strong>
+
+    <div class="subject-tools">
+     <button class="btn small" onclick="editSubject('${s.id}')">Edit</button>
      <button class="btn small danger" onclick="deleteSubject('${s.id}')">Delete</button>
+    </div>
    </div>
- </div>  
- <div class="row"><input id="topic-${s.id}" placeholder="Add topic/chapter" style="flex:1"><button class="btn small" onclick="addTopic('${s.id}')">Add topic</button></div>  
- ${s.topics.map((t,tIdx)=>`<div class="topic row between">
-   <label style="display:flex;gap:8px;align-items:center;color:var(--ink);flex:1">
-     <input type="checkbox" style="width:auto;margin:0" ${t.done?'checked':''} onchange="toggleTopic('${s.id}','${t.id}',this.checked)">${esc(t.name)}
-   </label>
-   <div class="row">
-     <button class="btn-arrow" ${tIdx===0?'disabled':''} onclick="moveTopic('${s.id}','${t.id}', -1)" title="Move Up">▲</button>
-     <button class="btn-arrow" ${tIdx===s.topics.length-1?'disabled':''} onclick="moveTopic('${s.id}','${t.id}', 1)" title="Move Down">▼</button>
-     <button class="btn small" onclick="editTopic('${s.id}','${t.id}')">Edit</button>
-     <button class="btn small danger" onclick="deleteTopic('${s.id}','${t.id}')">×</button>
+
+   ${isOpen?`<div class="subject-body">
+
+    <div class="row">
+     <input id="topic-${s.id}" placeholder="Add topic/chapter" style="flex:1">
+     <button class="btn small" onclick="addTopic('${s.id}')">Add topic</button>
+    </div>
+
+    ${s.topics.map((t,tIdx)=>`
+     <div class="topic row between" data-topic-id="${t.id}" data-parent-id="${s.id}">
+
+      <label style="display:flex;gap:8px;align-items:center;color:var(--ink);flex:1">
+       <input type="checkbox" style="width:auto;margin:0"
+       ${t.done?'checked':''}
+       onchange="toggleTopic('${s.id}','${t.id}',this.checked)">
+       ${esc(t.name)}
+      </label>
+
+      <div class="row">
+       <button class="drag-handle topic-drag" type="button"
+       aria-label="Hold and drag to move topic" title="Hold and drag to move">⠿</button>
+
+       <button class="btn small" onclick="editTopic('${s.id}','${t.id}')">Edit</button>
+       <button class="btn small danger" onclick="deleteTopic('${s.id}','${t.id}')">×</button>
+      </div>
+     </div>`).join('')||'<div class="empty">No topics yet. Add your first topic above.</div>'}
+
+   </div>`:''}
+  </div>`;
+ }).join('')||'<div class="empty">No subjects yet. Add your first subject.</div>';
+}
+
+function toggleSubject(sid){
+ if(openSubjects.has(sid))openSubjects.delete(sid);
+ else openSubjects.add(sid);
+ renderMap();
+}
+// SUBJECT AND TOPIC REORDERING — FIXED
+// Topic handles are detected BEFORE parent subject handles.
+
+document.addEventListener('pointerdown',e=>{
+ const handle=e.target.closest('.drag-handle');
+ if(!handle)return;
+
+ e.preventDefault();
+ dragStarted=false;
+
+ // IMPORTANT FIX: Detect topic first because it is inside a subject.
+ const topicEl=handle.closest('.topic');
+ const subjectEl=topicEl ? null : handle.closest('.subject');
+
+ longPressTimer=setTimeout(()=>{
+  dragStarted=true;
+
+  if(topicEl){
+   dragState={
+    type:'topic',
+    id:topicEl.dataset.topicId,
+    parent:topicEl.dataset.parentId,
+    element:topicEl
+   };
+  }else if(subjectEl){
+   dragState={
+    type:'subject',
+    id:subjectEl.dataset.subjectId,
+    element:subjectEl
+   };
+  }
+
+  if(dragState)dragState.element.classList.add('dragging');
+ },350);
+});
+
+document.addEventListener('pointermove',e=>{
+ if(!dragStarted||!dragState)return;
+
+ e.preventDefault();
+
+ const target=document.elementFromPoint(e.clientX,e.clientY);
+ if(!target)return;
+
+ // SUBJECT DRAGGING
+ if(dragState.type==='subject'){
+
+  const targetEl=target.closest('.subject');
+
+  if(!targetEl||targetEl===dragState.element)return;
+
+  const from=data.subjects.findIndex(s=>s.id===dragState.id);
+  const to=data.subjects.findIndex(s=>s.id===targetEl.dataset.subjectId);
+
+  if(from<0||to<0)return;
+
+  const item=data.subjects.splice(from,1)[0];
+  data.subjects.splice(to,0,item);
+
+  renderMap();
+
+  const moved=document.querySelector(
+   `[data-subject-id="${dragState.id}"]`
+  );
+
+  if(moved)moved.classList.add('dragging');
+  dragState.element=moved;
+ }
+
+ // TOPIC DRAGGING — ONLY WITHIN ITS OWN SUBJECT
+ else if(dragState.type==='topic'){
+
+  const targetEl=target.closest('.topic');
+
+  if(!targetEl)return;
+
+  // Prevent moving a topic into another subject.
+  if(targetEl.dataset.parentId!==dragState.parent)return;
+
+  if(targetEl.dataset.topicId===dragState.id)return;
+
+  const subject=data.subjects.find(
+   s=>s.id===dragState.parent
+  );
+
+  if(!subject)return;
+
+  const from=subject.topics.findIndex(
+   t=>t.id===dragState.id
+  );
+
+  const to=subject.topics.findIndex(
+   t=>t.id===targetEl.dataset.topicId
+  );
+
+  if(from<0||to<0)return;
+
+  const item=subject.topics.splice(from,1)[0];
+  subject.topics.splice(to,0,item);
+
+  renderMap();
+
+  const moved=document.querySelector(
+   `[data-topic-id="${dragState.id}"]`
+  );
+
+  if(moved)moved.classList.add('dragging');
+  dragState.element=moved;
+ }
+});
+
+function finishDrag(){
+ clearTimeout(longPressTimer);
+
+ if(dragStarted&&dragState){
+  document.querySelectorAll('.dragging').forEach(
+   el=>el.classList.remove('dragging')
+  );
+
+  dragState=null;
+  save();
+ }
+
+ dragStarted=false;
+}
+
+document.addEventListener('pointerup',finishDrag);
+document.addEventListener('pointercancel',finishDrag);
+
+
+// SUBJECT MANAGEMENT
+
+function editSubject(sid){
+ let s=data.subjects.find(x=>x.id===sid);
+ let n=prompt('Edit subject name:',s.name);
+
+ if(!n||!n.trim())return;
+
+ n=n.trim();
+
+ if(data.subjects.some(
+  x=>x.id!==sid&&x.name.toLowerCase()===n.toLowerCase()
+  ))return alert('Subject already exists.');
+
+ s.name=n;
+ save();
+}
+
+function deleteSubject(sid){
+ let s=data.subjects.find(x=>x.id===sid);
+
+ if(!confirm('Delete '+s.name+' and all its topics?'))return;
+
+ data.subjects=data.subjects.filter(x=>x.id!==sid);
+
+ data.quests.forEach(q=>{
+  if(q.subject===sid)q.subject='';
+ });
+
+ openSubjects.delete(sid);
+ save();
+}
+
+
+// TOPIC MANAGEMENT
+
+function addTopic(sid){
+ let el=document.getElementById('topic-'+sid);
+ let n=el.value.trim();
+
+ if(!n)return;
+
+ let s=data.subjects.find(x=>x.id===sid);
+
+ if(s.topics.some(
+  t=>t.name.toLowerCase()===n.toLowerCase()
+  ))return alert('Topic already exists.');
+
+ s.topics.push({
+  id:id(),
+  name:n,
+  done:false
+ });
+
+ save();
+}
+
+function editTopic(sid,tid){
+ let s=data.subjects.find(x=>x.id===sid);
+ let t=s.topics.find(x=>x.id===tid);
+
+ let n=prompt('Edit topic / chapter:',t.name);
+
+ if(!n||!n.trim())return;
+
+ n=n.trim();
+
+ if(s.topics.some(
+  x=>x.id!==tid&&x.name.toLowerCase()===n.toLowerCase()
+  ))return alert('Topic already exists.');
+
+ t.name=n;
+ save();
+}
+
+function toggleTopic(sid,tid,v){
+ let t=data.subjects.find(
+  s=>s.id===sid
+ ).topics.find(t=>t.id===tid);
+
+ t.done=v;
+ save();
+}
+
+function deleteTopic(sid,tid){
+ let s=data.subjects.find(x=>x.id===sid);
+
+ if(!confirm('Delete this topic?'))return;
+
+ s.topics=s.topics.filter(t=>t.id!==tid);
+ save();
+}
+
+
+// DAILY QUESTS
+
+function renderQuests(){
+ let d=document.getElementById('filterDate').value||today();
+
+ let list=data.quests.filter(q=>q.date===d);
+
+ document.getElementById('questList').innerHTML=list.length?
+ list.map(q=>{
+  let s=data.subjects.find(x=>x.id===q.subject);
+
+  return `<div class="quest ${q.done?'done':''}">
+   <div class="row between">
+
+    <label style="display:flex;gap:8px;align-items:center;color:var(--ink);font-size:14px">
+     <input type="checkbox" style="width:auto;margin:0"
+     ${q.done?'checked':''}
+     onchange="toggleQuest('${q.id}',this.checked)">
+     <span class="qtitle">${esc(q.title)}</span>
+    </label>
+
+    <button class="btn small danger"
+    onclick="deleteQuest('${q.id}')">Delete</button>
+
    </div>
- </div>`).join('')}  
- </div>`).join('')||'<div class="empty">No subjects yet. Add your first subject.</div>';  
-}  
-function moveSubject(sid, dir){  
- let idx = data.subjects.findIndex(s=>s.id===sid);  
- if(idx < 0) return;  
- let newIdx = idx + dir;  
- if(newIdx >= 0 && newIdx < data.subjects.length){  
-  let temp = data.subjects[idx];  
-  data.subjects[idx] = data.subjects[newIdx];  
-  data.subjects[newIdx] = temp;  
-  save();  
- }  
-}  
-function moveTopic(sid, tid, dir){  
- let s = data.subjects.find(x=>x.id===sid);  
- if(!s) return;  
- let idx = s.topics.findIndex(t=>t.id===tid);  
- if(idx < 0) return;  
- let newIdx = idx + dir;  
- if(newIdx >= 0 && newIdx < s.topics.length){  
-  let temp = s.topics[idx];  
-  s.topics[idx] = s.topics[newIdx];  
-  s.topics[newIdx] = temp;  
-  save();  
- }  
-}  
-function editSubject(sid){let s=data.subjects.find(x=>x.id===sid),n=prompt('Edit subject name:',s.name);if(!n||!n.trim())return;n=n.trim();if(data.subjects.some(x=>x.id!==sid&&x.name.toLowerCase()===n.toLowerCase()))return alert('Subject already exists.');s.name=n;save()}  
-function deleteSubject(sid){let s=data.subjects.find(x=>x.id===sid);if(!confirm('Delete '+s.name+' and all its topics?'))return;data.subjects=data.subjects.filter(x=>x.id!==sid);data.quests.forEach(q=>{if(q.subject===sid)q.subject=''});save()}  
-function addTopic(sid){let el=document.getElementById('topic-'+sid),n=el.value.trim();if(!n)return;let s=data.subjects.find(x=>x.id===sid);if(s.topics.some(t=>t.name.toLowerCase()===n.toLowerCase()))return alert('Topic already exists.');s.topics.push({id:id(),name:n,done:false});save()}  
-function editTopic(sid,tid){let s=data.subjects.find(x=>x.id===sid),t=s.topics.find(x=>x.id===tid),n=prompt('Edit topic / chapter:',t.name);if(!n||!n.trim())return;n=n.trim();if(s.topics.some(x=>x.id!==tid&&x.name.toLowerCase()===n.toLowerCase()))return alert('Topic already exists.');t.name=n;save()}  
-function toggleTopic(sid,tid,v){let t=data.subjects.find(s=>s.id===sid).topics.find(t=>t.id===tid);t.done=v;save()}  
-function deleteTopic(sid,tid){let s=data.subjects.find(x=>x.id===sid);if(!confirm('Delete this topic?'))return;s.topics=s.topics.filter(t=>t.id!==tid);save()}  
-function renderQuests(){let d=document.getElementById('filterDate').value||today(),list=data.quests.filter(q=>q.date===d);document.getElementById('questList').innerHTML=list.length?list.map(q=>{let s=data.subjects.find(x=>x.id===q.subject);return `<div class="quest ${q.done?'done':''}"><div class="row between"><label style="display:flex;gap:8px;align-items:center;color:var(--ink);font-size:14px"><input type="checkbox" style="width:auto;margin:0" ${q.done?'checked':''} onchange="toggleQuest('${q.id}',this.checked)"><span class="qtitle">${esc(q.title)}</span></label><button class="btn small danger" onclick="deleteQuest('${q.id}')">Delete</button></div><div class="row" style="margin-top:7px"><span class="tag">${esc(s?s.name:'General')}</span><span class="muted">${q.minutes} min · ${q.xp} XP</span></div></div>`}).join(''):'<div class="empty">No quests for this date. Add one or more above.</div>'}  
-function toggleQuest(qid,v){data.quests.find(q=>q.id===qid).done=v;save()}  
-function deleteQuest(qid){data.quests=data.quests.filter(q=>q.id!==qid);save()}  
-function renderTime(){let study=data.times.reduce((s,x)=>s+x.study,0),screen=data.times.reduce((s,x)=>s+x.screen,0);document.getElementById('allStudy').textContent=(study/60).toFixed(1)+'h';document.getElementById('allScreen').textContent=(screen/60).toFixed(1)+'h';document.getElementById('timeRecords').innerHTML=data.times.length?data.times.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(x=>`<div class="row between" style="padding:8px 0;border-bottom:1px solid var(--line)"><strong>${x.date}</strong><span class="muted">Study ${x.study} min · Screen ${x.screen} min</span></div>`).join(''):'<div class="empty">No time records yet.</div>'}  
-render();  
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));  
-</script>  
-</body></html>
+
+   <div class="row" style="margin-top:7px">
+    <span class="tag">${esc(s?s.name:'General')}</span>
+    <span class="muted">${q.minutes} min · ${q.xp} XP</span>
+   </div>
+  </div>`;
+ }).join(''):
+ '<div class="empty">No quests for this date. Add one or more above.</div>';
+}
+
+function toggleQuest(qid,v){
+ data.quests.find(q=>q.id===qid).done=v;
+ save();
+}
+
+function deleteQuest(qid){
+ data.quests=data.quests.filter(q=>q.id!==qid);
+ save();
+}
+
+
+// STUDY TIME AND SCREEN TIME
+
+function renderTime(){
+ let study=data.times.reduce((s,x)=>s+x.study,0);
+ let screen=data.times.reduce((s,x)=>s+x.screen,0);
+
+ document.getElementById('allStudy').textContent=
+ (study/60).toFixed(1)+'h';
+
+ document.getElementById('allScreen').textContent=
+ (screen/60).toFixed(1)+'h';
+
+ document.getElementById('timeRecords').innerHTML=
+ data.times.length?
+ data.times.slice().sort((a,b)=>b.date.localeCompare(a.date))
+ .map(x=>`
+  <div class="row between"
+  style="padding:8px 0;border-bottom:1px solid var(--line)">
+   <strong>${x.date}</strong>
+   <span class="muted">
+    Study ${x.study} min · Screen ${x.screen} min
+   </span>
+  </div>
+ `).join(''):
+ '<div class="empty">No time records yet.</div>';
+}
+
+
+// INITIALIZE APP
+
+render();
+
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+ });
+}
+</script>
+</body>
+</html>
