@@ -1,1 +1,1 @@
-# study-tracker-2
+# study-tracker
